@@ -1,0 +1,29 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Filter{% endblock title %}
+{% block body %}
+
+<h3>Class:{{clas}}</h3>
+<h3>Subject:{{subject}}</h3>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col">S.NO.</th>
+      <th scope="col">Roll No.</th>
+      <th scope="col">Name</th>
+      <th scope="col">Attendence Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>19001003142</td>
+      <td>vipul</td>
+      <td>2</td>
+    </tr>
+   
+  </tbody>
+</table>
+
+{% endblock body %}

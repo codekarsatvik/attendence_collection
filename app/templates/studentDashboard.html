@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}StudentDashBoard{% endblock title %}
+{% block body %}
+
+<div class="card transictions">
+                    <div class="card-body">
+                   
+                        <h4 class="card-title">Your Recent Attendence</h4>
+                     
+                        <form method="get" action='/subjectfilter' id='class-filter'>
+                            <select class="custom-select" id="inputGroupSelect01" name="subjectname" placeholder="Filter" onChange="document.getElementById('class-filter').submit();" >
+                            <option selected>Choose Subject</option>
+                            {% for subject in subjects %}
+                            <option value="{{subject.subjectname}}">{{subject.subjectname}}</option>
+                            {% endfor %}
+                          </select>
+                          </form>
+
+                          <form class="form" action="/student/dashboard/" method="post">
+                            {% csrf_token %}
+                            <label>Start Date : </label>
+                            <input type="date" name="startdate"  />
+                            <label>End Date : </label>
+                            <input type="date" name="enddate"  />
+                            <button class="btn btn-primary " type="submit">Filter </button>
+                            </form>
+
+                        
+                        <div class="table-responsive"  style="height : 60vh;overflow-y:scroll">
+
+                            <table class="table" name="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Subject Name</th>
+                                        
+                                        
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                
+                                  {% for data in attendence %}
+                                    <tr>
+                                        <td>{{data.date.date}}</td>
+                                        <td>{{data.date.time}}</td>
+                                        <td>{{data.subjectname}}</td>
+                                        
+                                        
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                </tbody>
+                               
+                            </table>
+                            
+                        </div>
+                         
+                    </div>
+                    
+                    
+                    <h5 class="total" >Total Classes: {{attendence | length}}</h5>
+                    
+                </div>
+{% endblock body %}
