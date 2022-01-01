@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load teachertags %}
 {% block title %}Confirm Attendence{% endblock title %}
 {% block body %}
 <div class="card transictions">
@@ -23,12 +24,20 @@
                                 <tbody>
                                   {% for data in df %}
                                     <tr>
+                                        
                                         <td>{{data.0| slice:11}}</td>
                                         <td>{{data.0 | slice:"11:"}}</td>
                                         <td>{{data.1}}</td>
                                         <td><button type="button" class="btn btn-primary">Edit</button>
                                         <button type="button" class="btn btn-danger">Delete</button>
                                         </td>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
                                     </tr>
                                     {% endfor %}
                                     

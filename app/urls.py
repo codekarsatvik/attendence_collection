@@ -34,4 +34,5 @@ urlpatterns = [
     path('subjectfilter/' ,views.SubjectFilter, name="subjectfilter"),
     path('addclass/',views.AddDeleteClass, name="addclass"),
     path('addsubject/',views.AddDeleteSubject , name="addsubject"),
+    path('export/',views.ExportExcel, name="export")
 ]

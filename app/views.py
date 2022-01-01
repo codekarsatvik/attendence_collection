@@ -1,3 +1,4 @@
+from typing import final
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
@@ -22,7 +23,7 @@ import re
 from home import settings
 import numpy as np
 
-
+from django.db.models import Count
 regexteacher = r'\b[A-Za-z._%+-]+@jcboseust.ac.in'
 
 regexstudent = r'\b[0-9._%+-]+@jcboseust.ac.in'
@@ -44,14 +45,28 @@ def addattendencesuccessfully(request):
         excelfile = ExcelFileUpload.objects.all()
         
         df = pd.read_csv(f"{latest_file}")
-        data=df.values.tolist()
+        df = df.values.tolist()
+        finallist = []
+        for i in df:
+
+            try:
+                if int(i[0][:11]):
+                    finallist.append(i)
+
+            except:
+                pass
+        
         classname=Class.objects.filter(classname=classnam).first()
         subjectname=Subject.objects.filter(subjectname=subjectnam).first()
-        ClassAttendence(classname=classname,subjectname=subjectname,date=datetime.now().date(),uploaded_by = request.user, students_present= len(data)).save()
-        for i in range(len(data)):
-            nam=data[i][0][12:]
-            rol=int(data[i][0][:11])
-            Attendence(name= nam,rollno=rol,classname=classname,subjectname=subjectname,date=datetime.now().date()).save()
+        
+        ClassAttendence(classname=classname,subjectname=subjectname,date=datetime.now().date(),uploaded_by = request.user, students_present= len(finallist)).save()
+        for i in range(len(finallist)):
+            
+                nam=finallist[i][0][12:]
+                rol=int(finallist[i][0][:11])
+                Attendence(name= nam,rollno=rol,classname=classname,subjectname=subjectname,date=datetime.now().date()).save()
+            
+            
         for document in excelfile:
             document.delete()
         return redirect('/teacher/dashboard')
@@ -91,20 +106,26 @@ class CustomerRegistrationView(View):
 
 def ImportExport(request):
     if (request.method == 'GET'):
-        list_of_files = glob.glob('static/excel/*.csv')
-         # * means all if need specific format then *.csv
-        latest_file = max(list_of_files, key=os.path.getctime)
-        print(latest_file)
-        df = pd.read_csv(f"{latest_file}")
-        
-        return render(request,'attendence.html',{'df' : df.values.tolist()})
+        return redirect('/addattendence')
     if(request.method == 'POST'):
         
         excel_file = ExcelFileUpload.objects.create(file = request.FILES["excel"])
         df = pd.read_csv(f"{excel_file.file}")
         classname = request.POST.get('class')
         subjectname = request.POST.get('subject')
-        return render(request,'attendence.html',{'classname':classname, 'subjectname':subjectname,'df' : df.values.tolist()})
+        df = df.values.tolist()
+        finallist = []
+        for i in df:
+
+            try:
+                if int(i[0][:11]):
+                    finallist.append(i)
+
+            except:
+                pass
+        
+
+        return render(request,'attendence.html',{'classname':classname, 'subjectname':subjectname,'df' : finallist})
 
 def TeacherDashboard(request):
     classes = Class.objects.all()
@@ -125,7 +146,7 @@ def filter(request):
 
 
 def attendencepage(request):
-    subjects = Subject.objects.all()
+    subjects = Subject.objects.filter(teacher = request.user)
     classes = Class.objects.all()
     return render(request,'addattendence.html',{'classes': classes,'subjects': subjects})
 
@@ -157,7 +178,7 @@ def AddDeleteSubject(request):
         subjectname = request.POST.get('subjectname')
         classname = request.POST.get('classname')
         class_name = Class.objects.filter(classname=classname).first()
-        Subject.objects.create(subjectname=subjectname, classname = class_name)
+        Subject.objects.create(subjectname=subjectname, classname = class_name,teacher = request.user)
         return redirect('/addattendence')
 
 def AddDeleteClass(request):
@@ -171,4 +192,49 @@ def AddDeleteClass(request):
 
         return redirect('/addattendence')
     
+def ExportExcel(request):
+    if request.method == 'GET':
+        subjects = Subject.objects.filter(teacher = request.user)
+        classes = Class.objects.all()
+        return render(request,'exportexcel.html',{'classes': classes,'subjects': subjects})
+
+
+    if request.method == 'POST':
+        subjectname = request.POST.get('subject')
+        classname = request.POST.get('class')
+        class_name = Class.objects.filter(classname = classname).first()
+        subject_name = Subject.objects.filter(subjectname = subjectname).first()
+        startdate = request.POST.get('startdate')
+        enddate = request.POST.get('enddate')
+        # print(subject_name, class_name, startdate, enddate)
+        if startdate and enddate:
+            attendence = Attendence.objects.filter(classname=class_name ).filter(subjectname = subject_name).filter(date__range=[startdate, enddate])
+        else:
+            attendence = Attendence.objects.filter(classname=class_name ).filter(subjectname = subject_name)
+        result = (attendence
+        .values('rollno')
+        .annotate(dcount=Count('rollno'))
+        .order_by()
+        )
+        rollno_list = []
+        total_attendence = []
+        attendence_percentage = []
+        for student in result:
+            rollno_list.append(student['rollno'])
+            total_attendence.append(student['dcount'])
+        if startdate and enddate :
+            totalattcount = ClassAttendence.objects.filter(classname = class_name).filter(subjectname = subject_name).filter(date__range=[startdate, enddate]).count()
+        else:
+            totalattcount = ClassAttendence.objects.filter(classname = class_name).filter(subjectname = subject_name).count()
+        for count in total_attendence:
+            attendence_percentage.append(int((count/totalattcount)*100))
+        # dictionary of lists
+        dict = {'Roll Number': rollno_list, 'Total Attendence': total_attendence, '%': attendence_percentage}
+
+        df = pd.DataFrame(dict)
+
+        # saving the dataframe
+        file_name="Att_"+str(classname)+"_"+str(datetime.now().date())+".csv"
+        df.to_csv(file_name)
+        return redirect('/export')
     

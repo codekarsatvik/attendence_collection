@@ -1,6 +1,863 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+{% load teachertags %}
 {% load static %}
-{% block title %}Home{% endblock title %}
-{% block body %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Home | Attendence Portal</title>
+     {%comment%} <link rel="stylesheet" href="style.css"> {%endcomment %}
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css">
+    <link href='{% static "img/assets/favicon.png" %}' rel="icon" type="image/png">
+        <link href='{% static "css/init.css" %}' rel="stylesheet" type="text/css">
+        <link href='{% static "css/ion-icons.min.css" %}' rel="stylesheet" type="text/css">
+        <link href='{% static "css/etline-icons.min.css" %}' rel="stylesheet" type="text/css">
+        <link href='{% static "css/theme.css" %}' rel="stylesheet" type="text/css">
+        <link href='{% static "css/custom.css" %}' rel="stylesheet" type="text/css">
+        <link href='{% static "css/colors/purple.css" %}' rel="stylesheet" type="text/css">
+        
+        <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700%7CRaleway:400,100,200,300%7CHind:400,300" rel="stylesheet" type="text/css">
+    
 
-{% endblock body %}
+        
+
+
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="">Attendence Portal</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="/">Home</a>
+              </li>
+              
+              {% if request.user|has_group:"teachers" %} 
+                  <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="/addattendence">Add Attendence</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="/teacher/dashboard">Teacher Dashboard</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link " aria-current="page" href="/student/dashboard">Student Dashboard</a>
+              </li>
+              {% endif %}
+              
+              
+              {% comment %}
+              <li class="nav-item">
+                <a class="nav-link" href="/wallet">Wallet</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/mygames">My Games</a>
+              </li>
+              {% endcomment %}
+              
+            </ul>
+            
+             
+              {% if request.user.is_authenticated %}
+              
+                 <li class="nav-item dropdown ">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      {{request.user.username|capfirst}}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                      <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                  </li>
+              
+              
+              {% else %}
+                  <li class="nav-item ">
+                   <a href="{% url 'login' %}" class="nav-link text-white">Login</a>
+                  </li>
+                  <li class="nav-item ">
+                   <a href="{% url 'customerregistration' %}" class="nav-link text-white">Registration</a>
+                  </li>
+              {% endif %}
+             
+      
+          </div>
+        </div>
+      </nav>
+    <section id="about" class="pt100 pb90">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12 text-center pb20">
+                    <h2>Attendence Portal</h2>
+                    <p class="lead" >It is a django based project where teacher can upload the attendence<br> sheet of students and perform data manipulation on the same</p>
+                    <h2><strong>Features</strong></h2>
+                </div>
+
+                <div class="col-sm-6 feature-left">
+                    <i class="icon-telescope size-3x color"></i>
+                    <i class="icon-telescope back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Upload Attendence</strong><br></h4>
+                        <p>Teachers of particular class can upload attendence sheet of their particular class and subject</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 feature-left">
+                    <i class="icon-circle-compass size-3x color"></i>
+                    <i class="icon-circle-compass back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Login Encription</strong><br></h4>
+                        <p>Teachers and students can signup to the attendence portal with safe encription </p>
+                    </div>
+                </div>
+                <div class="col-sm-6 feature-left">
+                    <i class="icon-genius size-3x color"></i>
+                    <i class="icon-genius back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Separate Dash</strong><br></h4>
+                        <p>There are two seperate portals for teachers as well as students where teachers can upload attendence,add new subject,class while students can only view the detailed description of the attendence</p>
+                    </div>
+                </div>
+                <div class="col-sm-6 feature-left">
+                    <i class="icon-layers size-3x color"></i>
+                    <i class="icon-layers back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Filters</strong><br></h4>
+                        <p>There are various filters offered by portal like subject wise filter,class wise filter and date wise filter</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- End About Us -->
+
+    
+
+    <!-- Team -->
+    <section id="team" class="hero-fullscreen2 pt100 pb90">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12 text-center">
+                    <h2>Our Creative <strong>Collective</strong></h2>
+                    <p class="lead">Interdisciplinary teams with <span class="color">big ideas</span>. Design and prototyping from day one.</p>
+                </div>
+
+                <div class="team-slider owl-carousel dark-pagination col-md-12">
+                    
+                    <div class="team">
+                        <div class="team-container">
+                            <div class="team-image">
+                                <img src='{% static "img/team/6.jpg" %}' class="img-responsive" alt="#" />
+                            </div>
+                            <div class="team-caption">
+                                <div>
+                                    <div>
+                                        <ul>
+                                            <li class="social-icon"><a href="https://www.facebook.com/" target="_blank"><i class="ion-social-facebook"></i></a></li>
+                                            <li class="social-icon"><a href="https://www.twitter.com/" target="_blank"><i class="ion-social-twitter"></i></a></li>
+                                            <li class="social-icon"><a href="https://www.youtube.com/" target="_blank"><i class="ion-social-youtube"></i></a></li>
+                                            <li class="social-icon"><a href="https://www.linkedin.com/" target="_blank"><i class="ion-social-linkedin"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %} <h6>Developer</h6> {% endcomment %}
+                        <h5>Satvik</h5>
+                        <p>Joint Secretary at University Computer Center and digital affairs , had organized a lot of technical as well as non technical events at university .
+                            Skilled in C++(Programming Language), Spanish, JavaScript, Data Structures, Node.js, MongoDB and Social Media. </p>
+                    </div>
+                    <div class="team">
+                        <div class="team-container">
+                            <div class="team-image">
+                                <img src='{% static "img/team/7.jpg" %}' class="img-responsive" alt="#" />
+                            </div>
+                            <div class="team-caption">
+                                <div>
+                                    <div>
+                                        <ul>
+                                            <li class="social-icon"><a href="https://www.facebook.com/" target="_blank"><i class="ion-social-facebook"></i></a></li>
+                                            <li class="social-icon"><a href="https://www.twitter.com/" target="_blank"><i class="ion-social-twitter"></i></a></li>
+                                            <li class="social-icon"><a href="https://www.youtube.com/" target="_blank"><i class="ion-social-youtube"></i></a></li>
+                                            <li class="social-icon"><a href="https://www.linkedin.com/" target="_blank"><i class="ion-social-linkedin"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% comment %} <h6>Designer</h6> {% endcomment %}
+                        <h5>Vipul</h5>
+                        <p>Strong engineering professional with a Bachelor of Technology - B.Tech focused in Computer Science from YMCA faridabad.Joint Secretary at Vivekanand Manch. National Chief Secretary at Geeksman. Skilled in C++, Data structure and algorithm, Web development.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- End Team -->
+
+    
+
+    <!-- Quotes -->
+    <section id="quotes" class="parallax pt100 pb90" data-overlay-dark="8">
+        <div class="background-image">
+            <img src='{% static "img/backgrounds/bg-4.jpg" %}' alt="#">
+        </div>
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="quote-slider navigation-thin container white text-center" data-autoplay="true" data-speed="2000">
+                        <div>
+                            <h2>
+                                <i class="vossen-quote color"></i>
+                                     <strong>What benefits do we have</strong><br>
+                                     {% comment %} To minimize the manual compilation of attendance for faculties <br>
+                                    To provide Realtime attendance to students <br>
+                                    To provide collective attendance sheets to faculty as well as students<br>
+                                    To notify students with mail with their monthly attendance percentage <br> {% endcomment %}
+
+                                {% comment %} <i class="vossen-quote color"></i> {% endcomment %}
+                            </h2>
+                            {% comment %} <p class="label label-primary">Wunderkind Team</p> {% endcomment %}
+                        </div>
+                        <div>
+                            <h2>
+                                <i class="vossen-quote color"></i>
+                                     <strong>To minimize the manual compilation of attendance for faculties</strong>
+                                <i class="vossen-quote color"></i>
+                            </h2>
+                            {% comment %} <p class="label label-primary">Albert Einstein</p> {% endcomment %}
+                        </div>
+                        <div>
+                            <h2>
+                                <i class="vossen-quote color"></i>
+                                    <strong>To provide Realtime attendance to students </strong> 
+                                <i class="vossen-quote color"></i>
+                            </h2>
+                            {% comment %} <p class="label label-primary">Dieter F. Uchtdorf</p> {% endcomment %}
+                        </div>
+                        <div>
+                            <h2>
+                                <i class="vossen-quote color"></i>
+                                     <strong>To provide collective attendance sheets to faculty as well as students</strong>
+                                <i class="vossen-quote color"></i>
+                            </h2>
+                            {% comment %} <p class="label label-primary">Albert Einstein</p> {% endcomment %}
+                        </div>
+                        <div>
+                            <h2>
+                                <i class="vossen-quote color"></i>
+                                     <strong>To notify students with mail with their monthly attendance percentage</strong>
+                                <i class="vossen-quote color"></i>
+                            </h2>
+                            {% comment %} <p class="label label-primary">Albert Einstein</p> {% endcomment %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- End Quotes -->
+    
+
+    <!-- Services -->
+    <section id="services" class="pt100 pb90">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12 text-center pb20">
+                    <h2 class="">How to use</h2>
+                    <h2 class=""><strong>For Teachers</strong></h2>
+                    {% comment %} <p class="lead">A highly skilled professional service with a <span class="color">creative touch</span>.</p> {% endcomment %}
+                </div>
+
+                <div class="col-md-4 col-sm-6 feature-left">
+                    <i class="icon-telescope size-3x color"></i>
+                    <i class="icon-telescope back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Step 1</strong></h4>
+                        <p>Sign up yourself as a teacher and then login your credentials.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 feature-left">
+                    <i class="icon-circle-compass size-3x color"></i>
+                    <i class="icon-circle-compass back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Step 2</strong><br></h4>
+                        <p>Add your class and Subject </p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 feature-left">
+                    <i class="icon-genius size-3x color"></i>
+                    <i class="icon-genius back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Step 3</strong><br></h4>
+                        <p>Upload  the attendence excel file by selecting your class and subjects and then confirm.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-6 feature-left">
+                    <i class="icon-layers size-3x color"></i>
+                    <i class="icon-layers back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Step 4</strong><br></h4>
+                        <p>At teacher dashboard you will see your attendences uploaded.You can also filter it according to date,subject and class.</p>
+                    </div>
+                </div>
+                <h2 class=""style="text-align:center;"><strong>For Students</strong></h2><br>
+                <div class="col-md-4 col-sm-6 feature-left">
+                    <i class="icon-gears size-3x color"></i>
+                    <i class="icon-gears back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Step 1</strong><br></h4>
+                        <p>Sign up yourself as a Student and then login your credentials.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 feature-left">
+                    <i class="icon-globe size-3x color"></i>
+                    <i class="icon-globe back-icon"></i>
+                    <div class="feature-left-content">
+                        <h4><strong>Step 2</strong><br></h4>
+                        <p>At student dashboard you will see your attendence where you can also filter it according to date and subject.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- End Services -->
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img class="d-block w-100" src="https://ibb.co/8dXDHhS" alt="First slide">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://ibb.co/8dXDHhS" alt="Second slide">
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="https://ibb.co/8dXDHhS" alt="Third slide">
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+                            
+   
+    <section id="contact" class="pt120 pb100">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12 text-center pb20">
+                    <h2>Get In Touch<br><strong>Contact Us</strong></h2>
+                    <p class="lead">We would like to <span class="color">hear from you</span></p>
+                </div>
+
+                <div class="col-md-8 col-md-offset-2 contact box-style">
+                    <div id="message-info"></div>
+                    <!-- Forms can be functional only on server. Upload to your server when testing. -->
+                    <form  method="post">
+
+                        <div class="col-sm-12">
+                            <input name="name" id="name" placeholder="Your Name *"/>
+                        </div>
+                        <div class="col-sm-6">
+                            <input name="email" id="email" placeholder="Your Email *"/>
+                        </div>
+                        <div class="col-sm-6">
+                            <input name="phone" id="phone" placeholder="Your Phone"/>
+                        </div>
+                        <div class="col-sm-12">
+                            <textarea name="message" rows="9" id="message" placeholder="Your Message *"></textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="submit" class="submit btn btn-lg btn-primary" id="submit" value="Send Message"/>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Start Footer -->
+    <footer id="footer" class="footer style-1 dark">
+
+        
+        <p>All rights reserved @2021.</p>
+        <p>Attendence Portal</p>
+
+        <!-- Back To Top Button -->
+        <span><a class="scroll-top"><i class="ion-chevron-up"></i></a></span>
+
+    </footer>
+    <!-- End Footer -->
+  
+  
+	
+    
+    
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"></script>
+    <script src='{% static "js/jquery.js" %}'></script>
+        <script src='{% static "js/init.js" %}'></script>
+        <script src='{% static "js/scripts.js" %}'></script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+{% comment %} {% load static %} {% endcomment %}
+{% comment %} {% block title %}Home{% endblock title %}
+
+
+{% block addcss %}
+
+        {% endblock addcss %}
+        {% block body %} {% endcomment %}
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+    
+
+<head>
+        
+        <meta charset="utf-8">
+        <title>Wunderkind - Multipurpose Responsive Onepage Template</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="img/assets/favicon.png" rel="icon" type="image/png">
+        <link href="css/init.css" rel="stylesheet" type="text/css">
+        <link href="css/ion-icons.min.css" rel="stylesheet" type="text/css">
+        <link href="css/etline-icons.min.css" rel="stylesheet" type="text/css">
+        <link href="css/theme.css" rel="stylesheet" type="text/css">
+        <link href="css/custom.css" rel="stylesheet" type="text/css">
+        <link href="css/colors/purple.css" rel="stylesheet" type="text/css">
+        <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700%7CRaleway:400,100,200,300%7CHind:400,300" rel="stylesheet" type="text/css">
+    </head>
+    <body data-fade-in="true"> {% endcomment %}
+
+        {% comment %} <div class="pre-loader"><div></div></div> {% endcomment %}
+
+        <!-- Start Header -->
+        {% comment %} <nav class="navbar nav-down" data-fullwidth="true" data-menu-style="transparent" data-animation="shrink">
+                                        <!-- Styles: light, dark, transparent, transparent-to-dark | Animation: hiding, shrink -->
+            <div class="container">
+
+                <div class="navbar-header">
+                    <div class="container">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar top-bar"></span>
+                            <span class="icon-bar middle-bar"></span>
+                            <span class="icon-bar bottom-bar"></span>
+                        </button>
+                        <a class="navbar-brand to-top" href="#"><img src="img/assets/logo-light.png" class="logo-light" alt="#"><img src="img/assets/logo-dark.png" class="logo-dark" alt="#"></a>
+                    </div>
+                </div>
+
+                <div id="navbar" class="navbar-collapse collapse">
+                    <div class="container">
+                        <ul class="nav navbar-nav menu-right">
+
+                            <!-- Each section must have corresponding ID ( #hero -> id="hero" ) -->
+                            <li><a href="#hero">Home</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#services">Services</a></li>
+                            <li><a href="#works">Work</a></li>
+                            <li class="dropdown megamenu vos">
+                                <a class="dropdown-toggle">Elements<i class="ion-ios-arrow-down"></i></a>
+                                <ul class="dropdown-menu fullwidth">
+                                    <li class="megamenu-content withdesc">
+                                        <div class="col-md-3 mg-col">
+                                            <ul>
+                                                <li><a href="elements.html#elements-accordion">Accordion</a></li>
+                                                <li><a href="elements.html#elements-buttons">Buttons</a></li>
+                                                <li><a href="elements.html#elements-features">Icon Features</a></li>
+                                                <li><a href="elements.html#elements-bars">Progress Bars</a></li>
+                                                <li><a href="elements.html#elements-pricing">Pricing Options</a></li>
+                                                <li><a href="elements.html#elements-lists">Lists</a></li>
+                                                <li><a href="elements.html#elements-typography">Typography</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-3 mg-col">
+                                            <ul>
+                                                <li><a href="elements.html#elements-tabs">Tabs</a></li>
+                                                <li><a href="elements.html#elements-circles">Progress Circles</a></li>
+                                                <li><a href="elements.html#elements-icons">Icon Fonts</a></li>
+                                                <li><a href="elements.html#elements-maps">Maps</a></li>
+                                                <li><a href="elements.html#elements-grid">Grid Columns</a></li>
+                                                <li><a href="elements.html#elements-countdown">Countdowns</a></li>
+                                                <li><a href="elements.html#elements-testimonials">Testimonials</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-3 mg-col">
+                                            <ul>
+                                                <li><a href="elements.html#elements-subscribe">Subscription</a></li>
+                                                <li><a href="elements.html#elements-videos">Video Embeds</a></li>
+                                                <li><a href="elements.html#elements-twitter">Twitter Feed</a></li>
+                                                <li><a href="elements.html#elements-callouts">Callouts</a></li>
+                                                <li><a href="portfolio-contained.html">Portfolio</a></li>
+                                                <li><a href="portfolio-fullwidth.html">Portfolio Fullwidth</a></li>
+                                                <li><a href="project-wide-gallery.html">Project Wide Gallery</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-3 mg-col">
+                                            <ul>
+                                                <li><a href="project-slides.html">Project Slides</a></li>
+                                                <li><a href="project-gallery.html">Projects Gallery</a></li>
+                                                <li><a href="project-video.html">Projects Video</a></li>
+                                                <li><a href="project-wide-slides.html">Project Wide Slides</a></li>
+                                                <li><a href="project-wide-video.html">Project Wide Video</a></li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle">Blog<i class="ion-ios-arrow-down"></i></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="blog-standard.html">Standard Layout</a></li>
+                                    <li><a href="blog-list.html">List Layout</a></li>
+                                    <li><a href="blog-grid.html">Grid Layout</a></li>
+                                    <li><a href="blog-post-standard.html">Standard Post</a></li>
+                                    <li><a href="blog-post-gallery.html">Gallery Post</a></li>
+                                    <li><a href="blog-post-video.html">Video Post</a></li>
+                                    <li><a href="blog-post-fullwidth.html">Fullwidth Post</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#contact">Contact</a></li>
+
+                            <li class="nav-separator"></li>
+                            <li  class="nav-icon"><a href="http://facebook.com/" target="_blank"><i class="ion-social-facebook"></i></a></li>
+                            <li  class="nav-icon"><a href="http://twitter.com/" target="_blank"><i class="ion-social-twitter"></i></a></li>
+                            <li  class="nav-icon"><a href="#" target="_blank"><i class="ion-help-buoy"></i></a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </nav> {% endcomment %}
+        <!-- End Header -->
+
+        <!-- Hero -->
+        {% comment %} <section id="hero" class="hero-fullscreen parallax" data-overlay-dark="7">
+            <div class="background-image">
+                <img src='{% static "img/backgrounds/bg-1.jpg" %}' alt="#">
+            </div>
+
+            <div class="container">
+                <div class="row">
+
+                    <div class="hero-content-slider mt20" data-autoplay="true" data-speed="4000">
+
+                        <div>
+                            <h1>We Are Wunderkind<br><strong>Something You Love</strong></h1>
+                            <p class="lead">We are digital agency that loves crafting beautiful websites with great functionality.</p>
+                            <a href="#about" class="btn btn-lg btn-primary btn-scroll">We're Creative</a>
+                        </div>
+
+                        <div> {% endcomment %}
+                            {% comment %} <h1>We Are Wunderkind<br><strong>We Make Brands Shine</strong></h1>
+                            <p class="lead">We do innovation, creativity, effectiveness and all that with love.</p>
+                            <a href="#about" class="btn btn-lg btn-primary btn-scroll">What we do</a>
+                        </div>
+
+                        <div>
+                            <h1>We Are Wunderkind<br><strong>Best Digital Agency</strong></h1>
+                            <p class="lead">Wunderkind was honored as best agency at EdAwards in New York.</p>
+                            <a href="#about" class="btn btn-lg btn-primary btn-scroll">Made with <i class="ion-heart"></i></a>
+                        </div>
+
+                        <div>
+                            <h1>We Are Wunderkind<br><strong>Nice to Meet You</strong></h1>
+                            <p class="lead">Let's meet up and see if there's chemistry!</p>
+                            <a href="#team" class="btn btn-lg btn-primary btn-scroll">Meet the Team</a>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section> {% endcomment %}
+        <!-- End Hero -->
+
+        <!-- About Us -->
+        {% comment %} <section id="about" class="pt100 pb90">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12 text-center pb20">
+                        <h2>Attendence Portal</h2>
+                        <p class="lead" >It is a django based project where teacher can upload the attendence<br> sheet of students and perform data manipulation on the same</p>
+                        <h2><strong>Features</strong></h2>
+                    </div>
+
+                    <div class="col-sm-6 feature-left">
+                        <i class="icon-telescope size-3x color"></i>
+                        <i class="icon-telescope back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Upload Attendence</strong><br></h4>
+                            <p>Teachers of particular class can upload attendence sheet of their particular class and subject</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 feature-left">
+                        <i class="icon-circle-compass size-3x color"></i>
+                        <i class="icon-circle-compass back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Login Encription</strong><br></h4>
+                            <p>Teachers and students can signup to the attendence portal with safe encription </p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 feature-left">
+                        <i class="icon-genius size-3x color"></i>
+                        <i class="icon-genius back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Separate Dash</strong><br></h4>
+                            <p>There are two seperate portals for teachers as well as students where teachers can upload attendence,add new subject,class while students can only view the detailed description of the attendence</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 feature-left">
+                        <i class="icon-layers size-3x color"></i>
+                        <i class="icon-layers back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Filters</strong><br></h4>
+                            <p>There are various filters offered by portal like subject wise filter,class wise filter and date wise filter</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!-- End About Us -->
+
+        
+
+        <!-- Team -->
+        <section id="team" class="hero-fullscreen2 pt100 pb90">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12 text-center">
+                        <h2>Our Creative <strong>Collective</strong></h2>
+                        <p class="lead">Interdisciplinary teams with <span class="color">big ideas</span>. Design and prototyping from day one.</p>
+                    </div>
+
+                    <div class="team-slider owl-carousel dark-pagination col-md-12">
+                        
+                        <div class="team">
+                            <div class="team-container">
+                                <div class="team-image">
+                                    <img src='{% static "img/team/6.jpg" %}' class="img-responsive" alt="#" />
+                                </div>
+                                <div class="team-caption">
+                                    <div>
+                                        <div>
+                                            <ul>
+                                                <li class="social-icon"><a href="https://www.facebook.com/" target="_blank"><i class="ion-social-facebook"></i></a></li>
+                                                <li class="social-icon"><a href="https://www.twitter.com/" target="_blank"><i class="ion-social-twitter"></i></a></li>
+                                                <li class="social-icon"><a href="https://www.youtube.com/" target="_blank"><i class="ion-social-youtube"></i></a></li>
+                                                <li class="social-icon"><a href="https://www.linkedin.com/" target="_blank"><i class="ion-social-linkedin"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% comment %} <h6>Developer</h6> {% endcomment %}
+                            
+        <!-- End Team -->
+
+        
+
+        <!-- Quotes -->
+        
+                                     
+                      
+        <!-- End Quotes -->
+        
+
+        <!-- Services -->
+        {% comment %} <section id="services" class="pt100 pb90">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12 text-center pb20">
+                        <h2 class="">How to use</h2>
+                        <h2 class=""><strong>For Teachers</strong></h2>
+                        
+                    </div>
+
+                    <div class="col-md-4 col-sm-6 feature-left">
+                        <i class="icon-telescope size-3x color"></i>
+                        <i class="icon-telescope back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Step 1</strong></h4>
+                            <p>Sign up yourself as a teacher and then login your credentials.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 feature-left">
+                        <i class="icon-circle-compass size-3x color"></i>
+                        <i class="icon-circle-compass back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Step 2</strong><br></h4>
+                            <p>Add your class and Subject </p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 feature-left">
+                        <i class="icon-genius size-3x color"></i>
+                        <i class="icon-genius back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Step 3</strong><br></h4>
+                            <p>Upload  the attendence excel file by selecting your class and subjects and then confirm.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-sm-6 feature-left">
+                        <i class="icon-layers size-3x color"></i>
+                        <i class="icon-layers back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Step 4</strong><br></h4>
+                            <p>At teacher dashboard you will see your attendences uploaded.You can also filter it according to date,subject and class.</p>
+                        </div>
+                    </div>
+                    <h2 class=""style="text-align:center;"><strong>For Students</strong></h2><br>
+                    <div class="col-md-4 col-sm-6 feature-left">
+                        <i class="icon-gears size-3x color"></i>
+                        <i class="icon-gears back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Step 1</strong><br></h4>
+                            <p>Sign up yourself as a Student and then login your credentials.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6 feature-left">
+                        <i class="icon-globe size-3x color"></i>
+                        <i class="icon-globe back-icon"></i>
+                        <div class="feature-left-content">
+                            <h4><strong>Step 2</strong><br></h4>
+                            <p>At student dashboard you will see your attendence where you can also filter it according to date and subject.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section> {% endcomment %}
+        <!-- End Services -->
+        {% comment %} <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+              <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+              <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img class="d-block w-100" src="https://ibb.co/8dXDHhS" alt="First slide">
+              </div>
+              <div class="carousel-item">
+                <img class="d-block w-100" src="https://ibb.co/8dXDHhS" alt="Second slide">
+              </div>
+              <div class="carousel-item">
+                <img class="d-block w-100" src="https://ibb.co/8dXDHhS" alt="Third slide">
+              </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="sr-only">Next</span>
+            </a>
+          </div> {% endcomment %}
+                                
+       
+        {% comment %} <section id="contact" class="pt120 pb100">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12 text-center pb20">
+                        <h2>Get In Touch<br><strong>Contact Us</strong></h2>
+                        <p class="lead">We would like to <span class="color">hear from you</span></p>
+                    </div>
+
+                    <div class="col-md-8 col-md-offset-2 contact box-style">
+                        <div id="message-info"></div>
+                        <!-- Forms can be functional only on server. Upload to your server when testing. -->
+                        <form  method="post">
+
+                            <div class="col-sm-12">
+                                <input name="name" id="name" placeholder="Your Name *"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="email" id="email" placeholder="Your Email *"/>
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="phone" id="phone" placeholder="Your Phone"/>
+                            </div>
+                            <div class="col-sm-12">
+                                <textarea name="message" rows="9" id="message" placeholder="Your Message *"></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <input type="submit" class="submit btn btn-lg btn-primary" id="submit" value="Send Message"/>
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section> {% endcomment %}
+        
+
+        {% comment %} <!-- Start Footer -->
+        <footer id="footer" class="footer style-1 dark">
+
+            
+            <p>All rights reserved @2021.</p>
+            <p>Attendence Portal</p>
+
+            <!-- Back To Top Button -->
+            <span><a class="scroll-top"><i class="ion-chevron-up"></i></a></span>
+
+        </footer>
+        <!-- End Footer -->
+
+        <script src='{% static "js/jquery.js" %}'></script>
+        <script src='{% static "js/init.js" %}'></script>
+        <script src='{% static "js/scripts.js" %}'></script>
+
+    </body> 
+
+</html> {% endcomment %}
+
+{% comment %} {% endblock body %} {% endcomment %}

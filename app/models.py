@@ -18,6 +18,7 @@ class Class(models.Model):
 class Subject(models.Model):
     subjectname = models.CharField(max_length=20)
     classname = models.ForeignKey(Class,on_delete=models.CASCADE)
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, )
 
     def __str__(self):
         return (self.subjectname) 

@@ -1,0 +1,11 @@
+#navbarSupportedContent{
+    display : flex !important;
+    margin-left: 160px;
+}
+
+
+.team-slider{
+
+    display : flex !important;
+    justify-content: center;
+}
