@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load teachertags %}
+{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -8,6 +9,7 @@
     <title>{% block title %}{% endblock title %} | Attendence Portal</title>
      {%comment%} <link rel="stylesheet" href="style.css"> {%endcomment %}
     {% block addcss %}{% endblock addcss %}
+   
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
@@ -32,6 +34,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link " aria-current="page" href="/teacher/dashboard">Teacher Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " aria-current="page" href="/export">Export Attendence</a>
         </li>
         {% else %}
         <li class="nav-item">
