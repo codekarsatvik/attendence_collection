@@ -3,7 +3,7 @@
 {% load static %}
 {% block title %}Home{% endblock title %}
 {% block body %}
-<div class="py-20 h-screen bg-gray-300 px-2">
+<div class="h-screen bg-gray-300 px-2">
     <div class="max-w-md mx-auto bg-white rounded-lg overflow-hidden md:max-w-lg">
         <div class="md:flex">
             <div class="w-full">
@@ -29,6 +29,11 @@
                     {% endfor %}
                     </select>
                     <a href='/addsubject'>Your Subject Not in List ? Add Subject </a>
+                </div>
+                <div class="mb-2"> <span class="text-sm">Date </span>
+                        
+                    <input type="date" name="date" class="form-control" >
+                
                 </div>
                     <div class="mb-2"> <span>Attachments</span>
                         <div class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">

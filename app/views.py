@@ -38,8 +38,11 @@ def addattendencesuccessfully(request):
     if(request.method == 'POST'):
         classnam = request.POST.get('clas')
         subjectnam = request.POST.get('subject')
+        date = request.POST.get('date')
+        print(date)
         df = request.POST.get('data')
         
+
         list_of_files = glob.glob('static/excel/*.csv')
         latest_file = max(list_of_files, key=os.path.getctime)
         excelfile = ExcelFileUpload.objects.all()
@@ -59,12 +62,12 @@ def addattendencesuccessfully(request):
         classname=Class.objects.filter(classname=classnam).first()
         subjectname=Subject.objects.filter(subjectname=subjectnam).first()
         
-        ClassAttendence(classname=classname,subjectname=subjectname,date=datetime.now().date(),uploaded_by = request.user, students_present= len(finallist)).save()
+        ClassAttendence(classname=classname,subjectname=subjectname,date=date,uploaded_by = request.user, students_present= len(finallist)).save()
         for i in range(len(finallist)):
             
                 nam=finallist[i][0][12:]
                 rol=int(finallist[i][0][:11])
-                Attendence(name= nam,rollno=rol,classname=classname,subjectname=subjectname,date=datetime.now().date()).save()
+                Attendence(name= nam,rollno=rol,classname=classname,subjectname=subjectname,date=date).save()
             
             
         for document in excelfile:
@@ -113,6 +116,9 @@ def ImportExport(request):
         df = pd.read_csv(f"{excel_file.file}")
         classname = request.POST.get('class')
         subjectname = request.POST.get('subject')
+        date = request.POST.get('date')
+        if date is None:
+            date = datetime.datetime.now().date()
         df = df.values.tolist()
         finallist = []
         for i in df:
@@ -125,7 +131,7 @@ def ImportExport(request):
                 pass
         
 
-        return render(request,'attendence.html',{'classname':classname, 'subjectname':subjectname,'df' : finallist})
+        return render(request,'attendence.html',{'classname':classname, 'subjectname':subjectname,'date':date,'df' : finallist})
 
 def TeacherDashboard(request):
     classes = Class.objects.all()

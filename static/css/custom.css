@@ -9,3 +9,8 @@
     display : flex !important;
     justify-content: center;
 }
+
+.att_details{
+    display : flex !important;
+    justify-content: space-between;
+}
