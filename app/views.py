@@ -88,19 +88,23 @@ class CustomerRegistrationView(View):
             email=form.cleaned_data['email']
             if(re.fullmatch(regexteacher, email)):
                 teacher_group = Group.objects.get(name='teachers') 
-                teacher_group.user_set.add(user)
+                user.is_active = False
                 user.username = email
+                user.save()
+                user.groups.add(teacher_group)
+                
                 messages.success(request,'Congratulations!! You are registered successfully as a Teacher, Your Username is Your Email')
             elif ( re.fullmatch(regexstudent, email)):
                 user.username = email[:11]
+                user.is_active = False
+                user.save()
                 messages.success(request,'Congratulations!! You are registered successfully as a Student , Your Username is your roll Number')
             else :
                 
                 messages.warning(request,'Oops, Your Email dont seems to be a University Email !')
                 return render(request,'customerregistration.html',{'form':form})
             
-            user.is_active = False
-            user.save()
+            
             
             
             
@@ -117,8 +121,9 @@ def ImportExport(request):
         classname = request.POST.get('class')
         subjectname = request.POST.get('subject')
         date = request.POST.get('date')
-        if date is None:
-            date = datetime.datetime.now().date()
+        
+    
+        
         df = df.values.tolist()
         finallist = []
         for i in df:
@@ -154,7 +159,8 @@ def filter(request):
 def attendencepage(request):
     subjects = Subject.objects.filter(teacher = request.user)
     classes = Class.objects.all()
-    return render(request,'addattendence.html',{'classes': classes,'subjects': subjects})
+    date = datetime.now().date()
+    return render(request,'addattendence.html',{'classes': classes,'curr_date':date,'subjects': subjects})
 
 
 def StudentDashboard(request):
