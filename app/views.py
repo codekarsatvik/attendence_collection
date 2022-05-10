@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User,Group
-from .models import ExcelFileUpload,Subject,Class,Attendence,ClassAttendence
+from .models import ExcelFileUpload, Subject, Class, Attendence, ClassAttendence, SubjectAttendence
 from django_email_verification import send_email
 from datetime import datetime
 import pandas as pd
@@ -39,7 +39,7 @@ def addattendencesuccessfully(request):
         classnam = request.POST.get('clas')
         subjectnam = request.POST.get('subject')
         date = request.POST.get('date')
-        print(date)
+
         df = request.POST.get('data')
         
 
@@ -67,6 +67,16 @@ def addattendencesuccessfully(request):
             
                 nam=finallist[i][0][12:]
                 rol=int(finallist[i][0][:11])
+                #  will find object for the student in specific subject
+                subject_att = SubjectAttendence.objects.filter(studentroll = rol).filter(subjectname = subjectname).first()
+                if(subject_att):
+                   subject_att.att_count +=1
+                   subject_att.save()
+                #     updating the att count
+                else:
+                    #  creating attendence
+                    SubjectAttendence(studentroll = rol, classname= classname, subjectname= subjectname, att_count = 1).save()
+
                 Attendence(name= nam,rollno=rol,classname=classname,subjectname=subjectname,date=date).save()
             
             
