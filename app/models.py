@@ -9,6 +9,7 @@ class ExcelFileUpload(models.Model):
     def delete(self, *args, **kwargs):
         os.remove(os.path.join(settings.STATICFILES_DIRS[0], self.file.name))
         super(ExcelFileUpload,self).delete(*args,**kwargs)
+        
 class Class(models.Model):
     classname = models.CharField(max_length=20)
 
@@ -38,7 +39,14 @@ class ClassAttendence(models.Model):
     date = models.DateTimeField()
     uploaded_by = models.ForeignKey(User,on_delete=models.CASCADE,null= True)
     students_present = models.IntegerField(default=0)
-    
+
+#     for optimisation of search query
+class SubjectAttendence(models.Model):
+    studentroll = models.IntegerField()
+    classname = models.ForeignKey(Class,on_delete=models.CASCADE)
+    subjectname = models.ForeignKey(Subject,on_delete=models.CASCADE)
+    att_count = models.IntegerField(default=0)
+
 
 # class Student(models.Model):
 #     name = models.CharField(max_length=20)
