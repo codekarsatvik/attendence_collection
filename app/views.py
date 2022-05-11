@@ -173,7 +173,7 @@ def attendencepage(request):
     return render(request,'addattendence.html',{'classes': classes,'curr_date':date,'subjects': subjects})
 
 
-def StudentDashboard(request):
+def DetailedStudentDashboard(request):
     subjects = Subject.objects.all()
     attendence = Attendence.objects.filter(rollno = int(request.user.username))
     if request.method == 'POST' :
@@ -184,6 +184,12 @@ def StudentDashboard(request):
     
     return render(request, 'StudentDashboard.html', {'subjects': subjects,'attendence': attendence})
 
+def StudentDashboard(request):
+    studentattendence = SubjectAttendence.objects.filter(studentroll = int(request.user.username))
+    for attendence in studentattendence:
+        attendence.total_count = ClassAttendence.objects.filter(subjectname = attendence.subjectname).count()
+    print(studentattendence)
+    pass
 
 def SubjectFilter(request):  
     subject_name = Subject.objects.filter(subjectname = request.GET.get('subjectname')).first()
