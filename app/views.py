@@ -188,8 +188,9 @@ def StudentDashboard(request):
     studentattendence = SubjectAttendence.objects.filter(studentroll = int(request.user.username))
     for attendence in studentattendence:
         attendence.total_count = ClassAttendence.objects.filter(subjectname = attendence.subjectname).count()
+        attendence.att_percentage = int((attendence.att_count/attendence.total_count)*100)
     print(studentattendence)
-    pass
+    return render(request, 'studentAttPerDashboard.html', {'studentattendence' : studentattendence})
 
 def SubjectFilter(request):  
     subject_name = Subject.objects.filter(subjectname = request.GET.get('subjectname')).first()
