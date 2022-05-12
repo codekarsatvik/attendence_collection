@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}StudentDashBoard{% endblock title %}
+{% block content %}
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300&display=swap');
+      .h1Font{
+          font-family: 'Nunito Sans', sans-serif;
+      }
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="wrapper flex flex-col m-10 justify-center items-center">
+            <div class="information w-[100%] h-1/2 p-10 bg-slate-300 flex flex-row justify-around rounded-md">
+                <div class="classRoll">
+                    <p class="font-medium md:text-xl"></p>
+                    <p class="font-medium md:text-xl">{{ request.user.username }}</p>
+                </div>
+                <div class="name md:text-xl font-medium pt-2">
+                    Sourav khan
+                </div>
+            </div>
+
+             {% for subject in studentattendence %}
+               <div class="rounded-lg shadow-xl {% if subject.att_percentage > 75 %}bg-[#84EB82]{% else%}bg-[#F6BDC0] {% endif %} mt-10 mr-5 p-10">
+              <header class=" text-2xl font-extrabold py-4 px-4 text-center h1Font">
+                  {{ subject.subjectname}}
+              </header>
+              <div>
+                <ul class="text-gray-500 text-center font-semibold">
+                  <li class="text-xl">Attended = {{ subject.att_count }}</li>
+                  <li class="text-xl">Total = {{ subject.total_count }}</li>
+                  <li class="text-xl">Percentage = {{ subject.att_percentage }}%</li>
+                </ul>
+              </div>
+              <!--Card Footer-->
+              <footer class="text-center py-3 px-8 text-gray-500">
+                <button
+                  class="py-2 px-4 mt-5 bg-green-500 rounded-lg text-white font-semibold hover:bg-green-600"
+
+                >
+                  View Details
+                </button>
+              </footer>
+            </div>
+           {% endfor %}
+        </div>
+    </div>
+{% endblock body %}
